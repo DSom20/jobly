@@ -1,5 +1,7 @@
 const db = require("../db");
 const ExpressError = require("../expressError");
+const partialUpdate = require("../helpers/partialUpdate");
+
 
 class Company {
   
@@ -52,6 +54,40 @@ class Company {
       RETURNING handle, name, num_employees, description, logo_url`,
       [handle, name, num_employees, description, logo_url]);
 
+    return result.rows[0];
+  }
+
+  static async getOne(handle) {
+    const result = await db.query(
+      `SELECT handle, name, num_employees, description, logo_url
+      FROM companies
+      WHERE handle=$1`,
+      [handle]
+    );
+    return result.rows[0];
+  }
+
+  /*
+    Updates a single company with matching handle. Updates only the columns that are provided in compData object. 
+  */
+  static async update(handle, compData) {
+    const queryObject = partialUpdate("companies", compData, "handle", handle);
+    const result = await db.query(
+      queryObject.query,
+      queryObject.values
+    );
+    return result.rows[0];
+  }
+  
+/*
+  Deletes a single company with matching handle from db. Returns object with
+  that company's name.
+*/
+  static async delete(handle) {
+    const result = await db.query(
+      `DELETE FROM companies WHERE handle=$1 RETURNING name`,
+      [handle]
+    )
     return result.rows[0];
   }
 }
