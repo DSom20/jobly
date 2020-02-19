@@ -3,6 +3,7 @@ const Company = require("../models/companyModel")
 const ExpressError = require("../expressError");
 const jsonschema = require("jsonschema");
 const companySchema = require("../schemas/companySchema.json");
+const companyUpdateSchema = require("../schemas/companyUpdateSchema.json");
 
 const router = express.Router();
 
@@ -72,7 +73,7 @@ router.get('/:handle', async function (req, res, next) {
 
 router.patch('/:handle', async function (req, res, next) {
   try {
-    const result = jsonschema.validate(req.body, companySchema);
+    const result = jsonschema.validate(req.body, companyUpdateSchema);
   
     if (!result.valid) {
       let listOfErrors = result.errors.map(error => error.stack);
@@ -97,7 +98,7 @@ router.patch('/:handle', async function (req, res, next) {
 
 router.delete('/:handle', async function (req, res, next) {
   try {
-    const company = await Company.delete(handle);
+    const company = await Company.delete(req.params.handle);
     if (!company) {
       throw new ExpressError("Page not found. Company does not exist.", 404);
     }
@@ -106,3 +107,5 @@ router.delete('/:handle', async function (req, res, next) {
     return next(err);
   }
 })
+
+module.exports = router;
