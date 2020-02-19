@@ -11,7 +11,7 @@ class Company {
     const result = await db.query(`SELECT handle, name FROM companies`)
     return result.rows;
   }
-
+  // accepts an object with search, min_employees, and/or max_employees keys
   static async getAllFiltered(filters) {
     if (filters.min_employees && filters.max_employees && filters.min_employees > filters.max_employees) {
       throw new ExpressError("Min_employees cannot be greater than max_employees", 400);
@@ -22,10 +22,10 @@ class Company {
       whereClauses.push(`name LIKE '%${filters.search}%'`);
     }
     if (filters.min_employees) {
-      whereClauses.push(`num_employees > filters.min_employees`);
+      whereClauses.push(`num_employees > ${filters.min_employees}`);
     }
     if (filters.max_employees) {
-      whereClauses.push(`num_employees < filters.max_employees`);
+      whereClauses.push(`num_employees < ${filters.max_employees}`);
     }
 
     let whereString = whereClauses.join(' AND ');
