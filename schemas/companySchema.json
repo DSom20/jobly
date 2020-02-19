@@ -1,0 +1,64 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "handle",
+    "name",
+    "num_employees"
+  ],
+  "properties": {
+    "handle": {
+      "$id": "#/properties/handle",
+      "type": "string",
+      "title": "The Handle Schema",
+      "default": "",
+      "examples": [
+        "apple"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "name": {
+      "$id": "#/properties/name",
+      "type": "string",
+      "title": "The Name Schema",
+      "default": "",
+      "examples": [
+        "Apple Inc."
+      ],
+      "pattern": "^(.*)$"
+    },
+    "num_employees": {
+      "$id": "#/properties/num_employees",
+      "type": "integer",
+      "title": "The Num_employees Schema",
+      "default": 0,
+      "examples": [
+        100000
+      ]
+    },
+    "description": {
+      "$id": "#/properties/description",
+      "type": "string",
+      "title": "The Description Schema",
+      "default": "",
+      "examples": [
+        "tech company"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "logo_url": {
+      "$id": "#/properties/logo_url",
+      "type": "string",
+      "title": "The Logo_url Schema",
+      "default": "",
+      "examples": [
+        "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+      ],
+      "pattern": "^(.*)$",
+      "format": "uri"
+    }
+  }
+}
