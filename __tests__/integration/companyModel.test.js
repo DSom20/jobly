@@ -37,20 +37,9 @@ describe("Test Company class", function () {
     test('can get list of all companies', async function () {
       let companies = await Company.getAll();
 
-      expect(companies).toEqual([{
-        handle: testCompanyA.handle,
-        name: testCompanyA.name
-      },
-      {
-        handle: testCompanyB.handle,
-        name: testCompanyB.name
-      },
-      {
-        handle: testCompanyC.handle,
-        name: testCompanyC.name
-      }]);
+      expect(companies).toHaveLength(3);
     });
-  })
+  });
 
   describe("Company.create()", function () {
     test('can create new company', async function () {
@@ -149,8 +138,8 @@ describe("Test Company class", function () {
 
       let getCompany = await Company.getOne(testCompanyC.handle);
       expect(getCompany).toEqual(undefined);
-    })
-  })
+    });
+  });
 });
 
 afterAll(async function () {

@@ -13,6 +13,7 @@ class Company {
     const result = await db.query(`SELECT handle, name FROM companies`)
     return result.rows;
   }
+  //REFACTOR 
   // accepts an object with search, min_employees, and/or max_employees keys
   static async getAllFiltered(filters) {
     if (filters.min_employees && filters.max_employees && filters.min_employees > filters.max_employees) {
@@ -71,11 +72,8 @@ class Company {
     Updates a single company with matching handle. Updates only the columns that are provided in compData object. 
   */
   static async update(handle, compData) {
-    const queryObject = partialUpdate("companies", compData, "handle", handle);
-    const result = await db.query(
-      queryObject.query,
-      queryObject.values
-    );
+    const { query, values } = partialUpdate("companies", compData, "handle", handle);
+    const result = await db.query(query, values);
     return result.rows[0];
   }
   

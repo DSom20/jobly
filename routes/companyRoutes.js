@@ -19,10 +19,11 @@ router.get("/", async function (req, res, next) {
 
     if (req.query) {
       result = await Company.getAllFiltered(req.query);
-    }
-    result = await Company.getAll();
+    } else {
+      result = await Company.getAll();
+    };
 
-    return res.json({ companies: result })
+    return res.json({ companies: result });
   } catch (err) {
     return next(err);
   }
@@ -81,9 +82,11 @@ router.patch('/:handle', async function (req, res, next) {
     }
 
     const company = await Company.update(req.params.handle, req.body);
+
     if (!company) {
       throw new ExpressError("Page not found. Company does not exist.", 404);
     }
+    
     return res.json({ company });  
   } catch (err) {
     return next(err);

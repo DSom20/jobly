@@ -34,27 +34,13 @@ describe("Company Routes Test", function () {
     });
   });
 
+  // add test with query parameters supplied
   describe('GET /', function () {
     test('gets list of all companies', async function () {
       let response = await request(app).get('/companies');
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body).toEqual({
-        companies:
-          [
-            {
-              handle: testCompanyA.handle,
-              name: testCompanyA.name
-            },
-            {
-              handle: testCompanyB.handle,
-              name: testCompanyB.name
-            },
-            {
-              handle: testCompanyC.handle,
-              name: testCompanyC.name
-            }]
-      });
+      expect(response.body.companies).toHaveLength(3);
     });
   });
 
@@ -82,7 +68,7 @@ describe("Company Routes Test", function () {
       expect(response2.body.companies).toHaveLength(4);
     });
 
-    test('creates new company for invalid data supplied', async function () {
+    test('returns 400 error for invalid data supplied', async function () {
       let response = await request(app).post('/companies')
         .send({
           name: "Test Company YYY",
