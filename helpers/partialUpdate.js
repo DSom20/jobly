@@ -3,7 +3,7 @@
  *
  * - table: where to make the query
  * - items: an object with keys of columns you want to update and values with
- *          updated values
+ * updated values
  * - key: the column that we query by (e.g. username, handle, id)
  * - id: current record ID
  *
