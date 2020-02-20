@@ -34,7 +34,6 @@ describe("Company Routes Test", function () {
     });
   });
 
-  // add test with query parameters supplied
   describe('GET /', function () {
     test('gets list of all companies', async function () {
       let response = await request(app).get('/companies');

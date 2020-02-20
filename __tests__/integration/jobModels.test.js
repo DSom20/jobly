@@ -1,7 +1,6 @@
 const db = require("../../db.js");
 const Job = require("../../models/jobModel");
 const Company = require("../../models/companyModel");
-const ExpressError = require("../../expressError");
 
 process.env.NODE_ENV === "test";
 
@@ -11,6 +10,7 @@ describe("Test Job class", function () {
   let testJobB;
   let testJobC;
   let testCompanyA;
+  let testCompanyB;
 
   beforeEach(async function () {
     await db.query("DELETE FROM companies");
@@ -48,7 +48,6 @@ describe("Test Job class", function () {
       equity: 1,
       company_handle: testCompanyB.handle
     });
-
   });
 
   describe("Job.getAll()", function () {
@@ -119,10 +118,8 @@ describe("Test Job class", function () {
     });
 
     test('can return filtered jobs with search and min_salary', async function () {
-      let jobs = await Job.getAllFiltered({ search: "aa", min_salary: 90 })
-
-      console.log(jobs);
-
+      let jobs = await Job.getAllFiltered({ search: "aa", min_salary: 90 });
+      
       expect(jobs).toEqual([{
         title: testJobA.title,
         company_handle: testJobA.company_handle

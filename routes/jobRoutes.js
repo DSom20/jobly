@@ -3,6 +3,7 @@ const Job = require("../models/jobModel")
 const ExpressError = require("../expressError");
 const jsonschema = require("jsonschema");
 const jobSchema = require("../schemas/jobSchema.json");
+const jobUpdateSchema = require("../schemas/jobUpdateSchema.json");
 
 const router = express.Router();
 /*
@@ -13,11 +14,13 @@ const router = express.Router();
 router.get('/', async function (req, res, next) {
   try {
     let jobs;
+
     if (!req.query) {
       jobs = await Job.getAll();
     } else {
       jobs = await Job.getAllFiltered(req.query);
     }
+
     return res.json({ jobs });
   } catch (err) {
     next(err);
@@ -39,8 +42,12 @@ router.post('/', async function (req, res, next) {
     return next(error);
   }
 
-  const job = await Job.create(req.body);
-  return res.status(201).json({ job });
+  try {
+    const job = await Job.create(req.body);
+    return res.status(201).json({ job });
+  } catch (err) {
+    next(err);
+  }
 });
 
 /*
@@ -51,10 +58,14 @@ router.post('/', async function (req, res, next) {
 
 router.get('/:id', async function (req, res, next) {
   try {
-    const job = await Job.getOne(req.params.id);
+    let id = +req.params.id;
+    if(isNaN(id)) throw new ExpressError("Page not found. Job id must be an integer.", 404);
+
+    const job = await Job.getOne(id);
     if (!job) {
       throw new ExpressError("Page not found. Job does not exist.", 404);
     }
+
     return res.json({ job });  
   } catch (err) {
     return next(err);
@@ -69,6 +80,9 @@ router.get('/:id', async function (req, res, next) {
 
 router.patch('/:id', async function (req, res, next) {
   try {
+    let id = +req.params.id;
+    if(isNaN(id)) throw new ExpressError("Page not found. Job id must be an integer.", 404);
+
     const result = jsonschema.validate(req.body, jobUpdateSchema);
   
     if (!result.valid) {
@@ -76,7 +90,7 @@ router.patch('/:id', async function (req, res, next) {
       throw new ExpressError(listOfErrors, 400);
     }
 
-    const job = await Job.update(req.params.id, req.body);
+    const job = await Job.update(id, req.body);
 
     if (!job) {
       throw new ExpressError("Page not found. Job does not exist.", 404);
@@ -96,9 +110,12 @@ router.patch('/:id', async function (req, res, next) {
 
 router.delete('/:id', async function (req, res, next) {
   try {
-    const job = await Job.delete(req.params.id);
+    let id = +req.params.id;
+    if(isNaN(id)) throw new ExpressError("Page not found. Job id must be an integer.", 404);
+
+    const job = await Job.delete(id);
     if (!job) {
-      throw new ExpressError("Page not found. job does not exist.", 404);
+      throw new ExpressError("Page not found. Job does not exist.", 404);
     }
     return res.json({ message: `Job called "${job.title}" deleted.` })
   } catch (err) {

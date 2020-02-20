@@ -44,8 +44,12 @@ router.post('/', async function (req, res, next) {
     return next(error);
   }
 
-  const company = await Company.create(req.body);
-  return res.status(201).json({ company });
+  try {
+    const company = await Company.create(req.body);
+    return res.status(201).json({ company });
+  } catch(err) {
+    next(err);
+  }
 });
 
 /*
