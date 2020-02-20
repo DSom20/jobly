@@ -1,6 +1,7 @@
 const db = require("../db");
 const ExpressError = require("../expressError");
 const partialUpdate = require("../helpers/partialUpdate");
+const Job = require("./jobModel");
 
 
 class Company {
@@ -78,7 +79,12 @@ class Company {
       WHERE handle=$1`,
       [handle]
     );
-    return result.rows[0];
+    const companyData = result.rows[0];
+    if (!companyData) {
+      return null;
+    }
+    const jobs = await Job.getJobsFromCompany(handle);
+    return {...companyData, ...jobs};
   }
 
   /*

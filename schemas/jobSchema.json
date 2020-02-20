@@ -5,22 +5,12 @@
   "type": "object",
   "title": "The Root Schema",
   "required": [
-    "id",
     "title",
     "salary",
     "equity",
     "company_handle"
   ],
   "properties": {
-    "id": {
-      "$id": "#/properties/id",
-      "type": "integer",
-      "title": "The Id Schema",
-      "default": 0,
-      "examples": [
-        99
-      ]
-    },
     "title": {
       "$id": "#/properties/title",
       "type": "string",
@@ -58,16 +48,6 @@
       "default": "",
       "examples": [
         "company_a"
-      ],
-      "pattern": "^(.*)$"
-    },
-    "date_posted": {
-      "$id": "#/properties/date_posted",
-      "type": "string",
-      "title": "The Date_posted Schema",
-      "default": "",
-      "examples": [
-        "02/20/2020"
       ],
       "pattern": "^(.*)$"
     }

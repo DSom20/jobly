@@ -1,5 +1,6 @@
 const db = require("../../db.js");
 const Company = require("../../models/companyModel");
+const Job = require("../../models/jobModel");
 const ExpressError = require("../../expressError");
 
 process.env.NODE_ENV === "test";
@@ -9,6 +10,8 @@ describe("Test Company class", function () {
   let testCompanyA;
   let testCompanyB;
   let testCompanyC;
+  let testJobA;
+  let testJobB;
 
   beforeEach(async function () {
     await db.query("DELETE FROM companies");
@@ -29,6 +32,20 @@ describe("Test Company class", function () {
       handle: "test_company_c",
       name: "Test Company CCC",
       num_employees: 75
+    });
+
+    testJobA = await Job.create({
+      title: "test_job_aaa",
+      salary: 100.01,
+      equity: 1,
+      company_handle: testCompanyA.handle
+    });
+
+    testJobB = await Job.create({
+      title: "test_job_baa",
+      salary: 50,
+      equity: .5,
+      company_handle: testCompanyB.handle
     });
 
   });
@@ -124,8 +141,8 @@ describe("Test Company class", function () {
 
   describe("Company.getOne()", function () {
     test('can get valid company', async function () {
-      let company = await Company.getOne(testCompanyC.handle);
-      expect(company).toEqual(testCompanyC);
+      let company = await Company.getOne(testCompanyB.handle);
+      expect(company).toEqual({...testCompanyB, jobs: [testJobB]});
     })
   });
 
@@ -137,7 +154,7 @@ describe("Test Company class", function () {
       expect(company).toEqual(testCompanyC);
 
       let getCompany = await Company.getOne(testCompanyC.handle);
-      expect(getCompany).toEqual(testCompanyC);
+      expect(getCompany).toEqual({...testCompanyC, jobs: []});
       expect(getCompany.num_employees).toEqual(200);
     });
   });
@@ -148,7 +165,7 @@ describe("Test Company class", function () {
       expect(company).toEqual({ name: testCompanyC.name });
 
       let getCompany = await Company.getOne(testCompanyC.handle);
-      expect(getCompany).toEqual(undefined);
+      expect(getCompany).toEqual(null);
     });
   });
 });

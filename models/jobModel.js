@@ -6,21 +6,19 @@ class Job {
 
   static async create({ id, title, salary, equity, company_handle, date_posted }) {
     const result = await db.query(`INSERT INTO jobs
-      (id,
-      title,
+      (title,
       salary,
       equity,
-      company_handle,
-      date_posted)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      company_handle)
+      VALUES ($1, $2, $3, $4)
       RETURNING id, title, salary, equity, company_handle, date_posted`,
-      [id, title, salary, equity, company_handle, date_posted]);
+      [title, salary, equity, company_handle]);
 
     return result.rows[0];
   }
 
   static async getAll() {
-    const result = await db.query(`SELECT tile, company_handle
+    const result = await db.query(`SELECT title, company_handle
       FROM jobs
       ORDER BY date_posted DESC`);
     return result.rows;
@@ -41,7 +39,7 @@ class Job {
 
     if (data.min_equity) {
       queryValues.push(+data.min_equity);
-      whereExpressions.push(`equity <= $${queryValues.length}`);
+      whereExpressions.push(`equity >= $${queryValues.length}`);
     }
 
     if (data.search) {
@@ -63,11 +61,21 @@ class Job {
 
   static async getOne(id) {
     let result = await db.query(
-      `SELECT (id, title, salary, equity, company_handle, date_posted)
+      `SELECT id, title, salary, equity, company_handle, date_posted
       FROM jobs
       WHERE id=$1`, [id]);
 
     return result.rows[0];
+  }
+
+  static async getJobsFromCompany(companyHandle) {
+    const jobsResult = await db.query(
+      `SELECT id, title, salary, equity, company_handle, date_posted
+      FROM jobs
+      WHERE company_handle=$1`,
+      [companyHandle]
+    );
+    return {jobs: jobsResult.rows};
   }
 
   static async update(id, jobData) {

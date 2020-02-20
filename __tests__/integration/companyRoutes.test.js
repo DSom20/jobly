@@ -112,7 +112,8 @@ describe("Company Routes Test", function () {
           name: "Test Company AAA",
           num_employees: 100,
           description: null,
-          logo_url: null
+          logo_url: null,
+          jobs: []
         }
       });
     });
@@ -155,7 +156,8 @@ describe("Company Routes Test", function () {
           name: "Test Company AAA",
           num_employees: 900,
           description: null,
-          logo_url: null
+          logo_url: null,
+          jobs: []
         }
       });
     });
