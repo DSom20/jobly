@@ -1,0 +1,76 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "id",
+    "title",
+    "salary",
+    "equity",
+    "company_handle"
+  ],
+  "properties": {
+    "id": {
+      "$id": "#/properties/id",
+      "type": "integer",
+      "title": "The Id Schema",
+      "default": 0,
+      "examples": [
+        99
+      ]
+    },
+    "title": {
+      "$id": "#/properties/title",
+      "type": "string",
+      "title": "The Title Schema",
+      "default": "",
+      "examples": [
+        "Analyst"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "salary": {
+      "$id": "#/properties/salary",
+      "type": "integer",
+      "title": "The Salary Schema",
+      "default": 0,
+      "examples": [
+        120000
+      ]
+    },
+    "equity": {
+      "$id": "#/properties/equity",
+      "type": "number",
+      "title": "The Equity Schema",
+      "default": 0.0,
+      "examples": [
+        0.12
+      ],
+      "exclusiveMinimum": 0,
+      "exclusiveMaximum": 1
+    },
+    "company_handle": {
+      "$id": "#/properties/company_handle",
+      "type": "string",
+      "title": "The Company_handle Schema",
+      "default": "",
+      "examples": [
+        "company_a"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "date_posted": {
+      "$id": "#/properties/date_posted",
+      "type": "string",
+      "title": "The Date_posted Schema",
+      "default": "",
+      "examples": [
+        "02/20/2020"
+      ],
+      "pattern": "^(.*)$"
+    }
+  },
+  "additionalProperties": false
+}

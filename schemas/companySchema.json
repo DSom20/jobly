@@ -60,5 +60,6 @@
       "pattern": "^(.*)$",
       "format": "uri"
     }
-  }
+  },
+  "additionalProperties": false
 }

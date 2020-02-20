@@ -15,13 +15,13 @@ describe("Test Company class", function () {
 
     testCompanyA = await Company.create({
       handle: "test_company_a",
-      name: "Test Company ABC",
+      name: "Test Company AAA",
       num_employees: 100
     });
 
     testCompanyB = await Company.create({
       handle: "test_company_b",
-      name: "Test Company XYZ",
+      name: "Test Company BAA",
       num_employees: 50
     });
 
@@ -63,7 +63,7 @@ describe("Test Company class", function () {
 
   describe("Company.getAllFiltered()", function () {
     test('can return filtered companies with search query', async function () {
-      let companies = await Company.getAllFiltered({ search: "ABC" })
+      let companies = await Company.getAllFiltered({ search: "AAA" })
 
       expect(companies).toEqual([{
         handle: testCompanyA.handle,
@@ -93,9 +93,20 @@ describe("Test Company class", function () {
       }]);
     });
 
-    test('can return filtered companies with min and max employees', async function () {
-      let companies = await Company.getAllFiltered({ min_employees: 55, max_employees: 90 })
+    test('can return filtered companies with search and min employees', async function () {
+      let companies = await Company.getAllFiltered({ search: "AA", min_employees: 90 })
 
+      console.log(companies);
+
+      expect(companies).toEqual([{
+        handle: testCompanyA.handle,
+        name: testCompanyA.name
+      }]);
+    });
+
+    test('can return filtered companies with min and max employees', async function () {
+      let companies = await Company.getAllFiltered({ min_employees: 55, max_employees: 90 });
+      
       expect(companies).toEqual([{
         handle: testCompanyC.handle,
         name: testCompanyC.name
@@ -128,8 +139,8 @@ describe("Test Company class", function () {
       let getCompany = await Company.getOne(testCompanyC.handle);
       expect(getCompany).toEqual(testCompanyC);
       expect(getCompany.num_employees).toEqual(200);
-    })
-  })
+    });
+  });
 
   describe("Company.delete()", function() {
     test('can delete a company', async function () {

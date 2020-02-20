@@ -1,0 +1,89 @@
+const db = require("../db");
+const ExpressError = require("../expressError");
+const partialUpdate = require("../helpers/partialUpdate");
+
+class Job {
+
+  static async create({ id, title, salary, equity, company_handle, date_posted }) {
+    const result = await db.query(`INSERT INTO jobs
+      (id,
+      title,
+      salary,
+      equity,
+      company_handle,
+      date_posted)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id, title, salary, equity, company_handle, date_posted`,
+      [id, title, salary, equity, company_handle, date_posted]);
+
+    return result.rows[0];
+  }
+
+  static async getAll() {
+    const result = await db.query(`SELECT tile, company_handle
+      FROM jobs
+      ORDER BY date_posted DESC`);
+    return result.rows;
+  }
+
+  static async getAllFiltered(data) {
+    let baseQuery = `SELECT title, company_handle FROM jobs`;
+    let whereExpressions = [];
+    let queryValues = [];
+
+    // For each possible search term, add to whereExpressions and
+    // queryValues so we can generate the right SQL
+
+    if (data.min_salary) {
+      queryValues.push(+data.min_salary);
+      whereExpressions.push(`salary >= $${queryValues.length}`);
+    }
+
+    if (data.min_equity) {
+      queryValues.push(+data.min_equity);
+      whereExpressions.push(`equity <= $${queryValues.length}`);
+    }
+
+    if (data.search) {
+      queryValues.push(`%${data.search}%`);
+      whereExpressions.push(`title ILIKE $${queryValues.length}`);
+    }
+
+    if (whereExpressions.length > 0) {
+      baseQuery += " WHERE ";
+    }
+
+    // Finalize query and return results
+
+    let finalQuery =
+      baseQuery + whereExpressions.join(" AND ") + " ORDER BY title";
+    const jobsRes = await db.query(finalQuery, queryValues);
+    return jobsRes.rows;
+  }
+
+  static async getOne(id) {
+    let result = await db.query(
+      `SELECT (id, title, salary, equity, company_handle, date_posted)
+      FROM jobs
+      WHERE id=$1`, [id]);
+
+    return result.rows[0];
+  }
+
+  static async update(id, jobData) {
+    const { query, values } = partialUpdate("jobs", jobData, "id", id);
+    const result = await db.query(query, values);
+    return result.rows[0];
+  }
+
+  static async delete(id) {
+    const result = await db.query(
+      `DELETE FROM jobs WHERE id=$1 RETURNING title`,
+      [id]
+    )
+    return result.rows[0];
+  }
+
+}
+
+module.exports = Job;

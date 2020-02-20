@@ -17,13 +17,13 @@ describe("Company Routes Test", function () {
 
     testCompanyA = await Company.create({
       handle: "test_company_a",
-      name: "Test Company ABC",
+      name: "Test Company AAA",
       num_employees: 100
     });
 
     testCompanyB = await Company.create({
       handle: "test_company_b",
-      name: "Test Company XYZ",
+      name: "Test Company BAA",
       num_employees: 50
     });
 
@@ -41,6 +41,18 @@ describe("Company Routes Test", function () {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.companies).toHaveLength(3);
+    });
+
+    test('gets list of filtered companies', async function () {
+      let response = await request(app).get('/companies?search=AA&min_employees=55');
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.companies).toEqual(
+        [{
+          handle: "test_company_a",
+          name: "Test Company AAA"
+        }]
+      );
     });
   });
 
@@ -97,7 +109,7 @@ describe("Company Routes Test", function () {
         company:
         {
           handle: "test_company_a",
-          name: "Test Company ABC",
+          name: "Test Company AAA",
           num_employees: 100,
           description: null,
           logo_url: null
@@ -127,7 +139,7 @@ describe("Company Routes Test", function () {
       expect(response.body).toEqual({
         company: {
           handle: "test_company_a",
-          name: "Test Company ABC",
+          name: "Test Company AAA",
           num_employees: 900,
           description: null,
           logo_url: null
@@ -140,7 +152,7 @@ describe("Company Routes Test", function () {
         company:
         {
           handle: "test_company_a",
-          name: "Test Company ABC",
+          name: "Test Company AAA",
           num_employees: 900,
           description: null,
           logo_url: null

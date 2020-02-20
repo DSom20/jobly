@@ -15,15 +15,15 @@ const router = express.Router();
 
 router.get("/", async function (req, res, next) {
   try {
-    let result;
+    let companies;
 
     if (req.query) {
-      result = await Company.getAllFiltered(req.query);
+      companies = await Company.getAllFiltered(req.query);
     } else {
-      result = await Company.getAll();
+      companies = await Company.getAll();
     };
 
-    return res.json({ companies: result });
+    return res.json({ companies });
   } catch (err) {
     return next(err);
   }
