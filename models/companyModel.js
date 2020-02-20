@@ -16,19 +16,27 @@ class Company {
   //REFACTOR 
   // accepts an object with search, min_employees, and/or max_employees keys
   static async getAllFiltered(filters) {
-    if (filters.min_employees && filters.max_employees && filters.min_employees > filters.max_employees) {
+    const { search, min_employees, max_employees } = filters;
+    if (min_employees > max_employees) {
       throw new ExpressError("Min_employees cannot be greater than max_employees", 400);
     }
 
     let whereClauses = [];
-    if (filters.search) {
-      whereClauses.push(`name LIKE '%${filters.search}%'`);
-    }
-    if (filters.min_employees) {
-      whereClauses.push(`num_employees > ${filters.min_employees}`);
-    }
-    if (filters.max_employees) {
-      whereClauses.push(`num_employees < ${filters.max_employees}`);
+    let values = [];
+    let idx = 1;
+
+    for (let queryParam in filters) {
+      if (queryParam === "search") {
+        whereClauses.push(`name LIKE $${idx}`);
+        values.push(`%${filters[queryParam]}%`);
+      } else if (queryParam === "min_employees") {
+        whereClauses.push(`num_employees > $${idx}`);
+        values.push(filters[queryParam]);
+      } else if (queryParam === "max_employees") {
+        whereClauses.push(`num_employees < $${idx}`);
+        values.push(filters[queryParam]);
+      }
+      idx++;
     }
 
     let whereString = whereClauses.join(' AND ');
@@ -39,7 +47,8 @@ class Company {
     const result = await db.query(
       `SELECT handle, name
        FROM companies
-       ${whereString}`);
+       ${whereString}`,
+       values);
 
     return result.rows;
   }
@@ -76,7 +85,7 @@ class Company {
     const result = await db.query(query, values);
     return result.rows[0];
   }
-  
+
 /*
   Deletes a single company with matching handle from db. Returns object with
   that company's name.
