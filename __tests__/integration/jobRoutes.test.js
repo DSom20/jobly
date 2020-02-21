@@ -141,7 +141,8 @@ describe("Job Routes Test", function () {
           salary: 100,
           equity: 1,
           company_handle: testCompanyA.handle,
-          date_posted: expect.any(String)
+          date_posted: expect.any(String),
+          company: { ...testCompanyA, jobs: [testJobA, testJobB]} //BRITTLE! should be another way. Plus still errors because expects date_posted to be date object, but this method produces string
         }
       });
     });
@@ -171,7 +172,7 @@ describe("Job Routes Test", function () {
     test('updates valid job from id supplied', async function () {
       let response = await request(app).patch(`/jobs/${testJobA.id}`)
         .send({
-          salary: 1300
+          salary: 1300.00
         });
 
       expect(response.statusCode).toEqual(200);
@@ -179,7 +180,7 @@ describe("Job Routes Test", function () {
         job: {
           id: expect.any(Number),
           title: "test_job_aaa",
-          salary: 1300,
+          salary: 1300.00,
           equity: 1,
           company_handle: testCompanyA.handle,
           date_posted: expect.any(String)
@@ -192,7 +193,7 @@ describe("Job Routes Test", function () {
         job: {
           id: expect.any(Number),
           title: "test_job_aaa",
-          salary: 1300,
+          salary: 1300.00,
           equity: 1,
           company_handle: testCompanyA.handle,
           date_posted: expect.any(String)

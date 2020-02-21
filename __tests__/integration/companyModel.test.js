@@ -112,9 +112,6 @@ describe("Test Company class", function () {
 
     test('can return filtered companies with search and min employees', async function () {
       let companies = await Company.getAllFiltered({ search: "AA", min_employees: 90 })
-
-      console.log(companies);
-
       expect(companies).toEqual([{
         handle: testCompanyA.handle,
         name: testCompanyA.name

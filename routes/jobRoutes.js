@@ -1,5 +1,6 @@
 const express = require("express");
-const Job = require("../models/jobModel")
+const Job = require("../models/jobModel");
+const Company = require("../models/companyModel");
 const ExpressError = require("../expressError");
 const jsonschema = require("jsonschema");
 const jobSchema = require("../schemas/jobSchema.json");
@@ -60,13 +61,13 @@ router.get('/:id', async function (req, res, next) {
   try {
     let id = +req.params.id;
     if(isNaN(id)) throw new ExpressError("Page not found. Job id must be an integer.", 404);
-
     const job = await Job.getOne(id);
     if (!job) {
       throw new ExpressError("Page not found. Job does not exist.", 404);
     }
-
-    return res.json({ job });  
+    // Added this company part-- still working on testing it!!
+    const company = await Company.getOne(job.company_handle);
+    return res.json({ job: {...job, company} });  
   } catch (err) {
     return next(err);
   }
