@@ -24,13 +24,3 @@ CREATE TABLE users (
   photo_url TEXT,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 )
-
-{
-  username: "john smith",
-  password: "password",
-  first_name: "john",
-  last_name: "smith",
-  email: "example@example.com",
-  photo_url: "http://www.example.com",
-  is_admin: false
-}

@@ -1,12 +1,25 @@
 const db = require("../db");
 const ExpressError = require("../expressError");
 const partialUpdate = require("../helpers/partialUpdate");
-const Job = require("./jobModel");
 const bcrypt = require("bcrypt");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
 
 class User {
+
+  /** Authenticate: is this username/password valid? Returns boolean. */
+
+  static async authenticate(username, password) {
+    const result = await db.query(
+      `SELECT password FROM users WHERE username = $1`,
+      [username]);
+    const user = result.rows[0];
+
+    if (user) {
+      return (await bcrypt.compare(password, user.password) === true);
+    }
+    return false;
+  }
 
   /* 
     Retrieves all users,
@@ -89,4 +102,4 @@ class User {
   }
 }
 
-module.exports = Company;
+module.exports = User;

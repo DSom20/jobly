@@ -1,8 +1,10 @@
 const express = require("express");
 const ExpressError = require("../expressError");
+const User = require("../models/userModel");
 const jsonschema = require("jsonschema");
 const userSchema = require("../schemas/userSchema.json");
 const userUpdateSchema = require("../schemas/userUpdateSchema.json");
+const { ensureLoggedIn, ensureCorrectUser }  = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -29,7 +31,7 @@ router.get("/", async function (req, res, next) {
 
 router.post('/', async function (req, res, next) {
   const result = jsonschema.validate(req.body, userSchema);
-  
+
   if (!result.valid) {
     let listOfErrors = result.errors.map(error => error.stack);
     let error = new ExpressError(listOfErrors, 400);
@@ -37,9 +39,12 @@ router.post('/', async function (req, res, next) {
   }
 
   try {
-    const user = await User.create(req.body);
-    return res.status(201).json({ user });
-  } catch(err) {
+    let { username, is_admin } = await User.create(req.body);
+    let payload = { username, is_admin };
+    let token = jwt.sign(payload, SECRET_KEY);
+
+    return res.status(201).json({ token });
+  } catch (err) {
     next(err);
   }
 });
@@ -56,7 +61,7 @@ router.get('/:username', async function (req, res, next) {
     if (!user) {
       throw new ExpressError("Page not found. User does not exist.", 404);
     }
-    return res.json({ user });  
+    return res.json({ user });
   } catch (err) {
     return next(err);
   }
@@ -71,7 +76,7 @@ router.get('/:username', async function (req, res, next) {
 router.patch('/:username', async function (req, res, next) {
   try {
     const result = jsonschema.validate(req.body, userUpdateSchema);
-  
+
     if (!result.valid) {
       let listOfErrors = result.errors.map(error => error.stack);
       throw new ExpressError(listOfErrors, 400);
@@ -82,8 +87,8 @@ router.patch('/:username', async function (req, res, next) {
     if (!user) {
       throw new ExpressError("Page not found. User does not exist.", 404);
     }
-    
-    return res.json({ user });  
+
+    return res.json({ user });
   } catch (err) {
     return next(err);
   }
