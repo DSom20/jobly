@@ -142,7 +142,8 @@ describe("Job Routes Test", function () {
           equity: 1,
           company_handle: testCompanyA.handle,
           date_posted: expect.any(String),
-          company: { ...testCompanyA, jobs: [testJobA, testJobB]} //BRITTLE! should be another way. Plus still errors because expects date_posted to be date object, but this method produces string
+          company: testCompanyA
+          // company: { ...testCompanyA, jobs: [testJobA, testJobB]} //BRITTLE! should be another way. Plus still errors because expects date_posted to be date object, but this method produces string
         }
       });
     });
@@ -196,7 +197,9 @@ describe("Job Routes Test", function () {
           salary: 1300.00,
           equity: 1,
           company_handle: testCompanyA.handle,
-          date_posted: expect.any(String)
+          date_posted: expect.any(String),
+          company: { ...testCompanyA }
+
         }
       });
     });

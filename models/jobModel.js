@@ -60,12 +60,26 @@ class Job {
   }
 
   static async getOne(id) {
-    let result = await db.query(
+    const jobsResponse = await db.query(
       `SELECT id, title, salary, equity, company_handle, date_posted
       FROM jobs
       WHERE id=$1`, [id]);
+    
+    const job = jobsResponse.rows[0];
 
-    return result.rows[0];
+    if (!job) {
+      throw new ExpressError("Page not found. Job does not exist.", 404);
+    }
+
+    const companiesResponse = await db.query(
+      `SELECT name, num_employees, description, logo_url, handle
+        FROM companies 
+        WHERE handle = $1`,
+      [job.company_handle]
+    );
+  
+    job.company = companiesResponse.rows[0];
+    return job;
   }
 
   static async getJobsFromCompany(companyHandle) {

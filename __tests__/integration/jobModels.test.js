@@ -1,6 +1,7 @@
 const db = require("../../db.js");
 const Job = require("../../models/jobModel");
 const Company = require("../../models/companyModel");
+const ExpressError = require("../../expressError");
 
 process.env.NODE_ENV === "test";
 
@@ -130,7 +131,7 @@ describe("Test Job class", function () {
   describe("Job.getOne()", function () {
     test('can get valid job', async function () {
       let job = await Job.getOne(testJobC.id);
-      expect(job).toEqual(testJobC);
+      expect(job).toEqual({ ...testJobC, company: { ...testCompanyB }});
     });
   });
 
@@ -149,7 +150,7 @@ describe("Test Job class", function () {
       expect(job).toEqual(testJobC);
 
       let getJob = await Job.getOne(testJobC.id);
-      expect(getJob).toEqual(testJobC);
+      expect(getJob).toEqual({ ...testJobC, company: { ...testCompanyB }});
       expect(getJob.salary).toEqual(2000);
     });
   });
@@ -158,9 +159,11 @@ describe("Test Job class", function () {
     test('can delete a job', async function () {
       let job = await Job.delete(testJobC.id);
       expect(job).toEqual({ title: testJobC.title });
-
-      let getJob = await Job.getOne(testJobC.id);
-      expect(getJob).toEqual(undefined);
+      try {
+        let getJob = await Job.getOne(testJobC.id);
+      } catch (err) {
+        expect(err).toBeInstanceOf(ExpressError);
+      }
     });
   });
 });

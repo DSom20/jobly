@@ -79,9 +79,7 @@ class Company {
       WHERE handle=$1`,
       [handle]
     );
-    console.log("***result: ", result);
     const companyData = result.rows[0];
-    console.log("companyData: ", companyData);
     if (!companyData) {
       return null;
     }

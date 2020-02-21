@@ -62,12 +62,7 @@ router.get('/:id', async function (req, res, next) {
     let id = +req.params.id;
     if(isNaN(id)) throw new ExpressError("Page not found. Job id must be an integer.", 404);
     const job = await Job.getOne(id);
-    if (!job) {
-      throw new ExpressError("Page not found. Job does not exist.", 404);
-    }
-    // Added this company part-- still working on testing it!!
-    const company = await Company.getOne(job.company_handle);
-    return res.json({ job: {...job, company} });  
+    return res.json({ job });  
   } catch (err) {
     return next(err);
   }
